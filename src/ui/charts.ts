@@ -69,13 +69,107 @@ export function renderScoreChart(
 		circle.setAttribute('cy', String(yScale(pt.score)));
 		circle.setAttribute('r', '4');
 		circle.setAttribute('class', 'tracker-point');
-
-		const title = svgEl('title');
-		title.textContent = `${pt.date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}: ${pt.score}`;
-		circle.appendChild(title);
-
 		svg.appendChild(circle);
 	}
+
+	// ── Hover layer ──────────────────────────────────────────────────────────
+	const crosshair = svgEl('line');
+	crosshair.setAttribute('class', 'tracker-crosshair');
+	crosshair.setAttribute('y1', String(PAD.top));
+	crosshair.setAttribute('y2', String(PAD.top + chartH));
+	crosshair.setAttribute('visibility', 'hidden');
+	svg.appendChild(crosshair);
+
+	const hoverCircle = svgEl('circle');
+	hoverCircle.setAttribute('r', '6');
+	hoverCircle.setAttribute('class', 'tracker-hover-point');
+	hoverCircle.setAttribute('visibility', 'hidden');
+	svg.appendChild(hoverCircle);
+
+	const TIP_W = 130, TIP_H = 42;
+	const tooltip = svgEl('g');
+	tooltip.setAttribute('visibility', 'hidden');
+	tooltip.setAttribute('pointer-events', 'none');
+
+	const tooltipBg = svgEl('rect');
+	tooltipBg.setAttribute('width', String(TIP_W));
+	tooltipBg.setAttribute('height', String(TIP_H));
+	tooltipBg.setAttribute('rx', '5');
+	tooltipBg.setAttribute('class', 'tracker-tooltip-bg');
+	tooltip.appendChild(tooltipBg);
+
+	const tooltipDate = svgEl('text');
+	tooltipDate.setAttribute('class', 'tracker-tooltip-date');
+	tooltip.appendChild(tooltipDate);
+
+	const tooltipScore = svgEl('text');
+	tooltipScore.setAttribute('class', 'tracker-tooltip-score');
+	tooltip.appendChild(tooltipScore);
+
+	svg.appendChild(tooltip);
+
+	// Transparent hit area over the chart
+	const hitArea = svgEl('rect');
+	hitArea.setAttribute('x', String(PAD.left));
+	hitArea.setAttribute('y', String(PAD.top));
+	hitArea.setAttribute('width', String(chartW));
+	hitArea.setAttribute('height', String(chartH));
+	hitArea.setAttribute('fill', 'transparent');
+	svg.appendChild(hitArea);
+
+	svg.addEventListener('mousemove', (e) => {
+		const rect = svg.getBoundingClientRect();
+		const mouseX = ((e.clientX - rect.left) / rect.width) * W;
+
+		let nearestIdx = 0;
+		let nearestDist = Infinity;
+		for (let i = 0; i < data.length; i++) {
+			const dist = Math.abs(xScale(i) - mouseX);
+			if (dist < nearestDist) { nearestDist = dist; nearestIdx = i; }
+		}
+
+		const pt = data[nearestIdx];
+		if (!pt || nearestDist > 40) {
+			tooltip.setAttribute('visibility', 'hidden');
+			crosshair.setAttribute('visibility', 'hidden');
+			hoverCircle.setAttribute('visibility', 'hidden');
+			return;
+		}
+
+		const cx = xScale(nearestIdx);
+		const cy = yScale(pt.score);
+
+		crosshair.setAttribute('x1', String(cx));
+		crosshair.setAttribute('x2', String(cx));
+		crosshair.setAttribute('visibility', 'visible');
+
+		hoverCircle.setAttribute('cx', String(cx));
+		hoverCircle.setAttribute('cy', String(cy));
+		hoverCircle.setAttribute('visibility', 'visible');
+
+		tooltipDate.textContent = pt.date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+		tooltipScore.textContent = `Score: ${pt.score}`;
+
+		let tx = cx + 10;
+		let ty = cy - TIP_H - 6;
+		if (tx + TIP_W > W - PAD.right) tx = cx - TIP_W - 10;
+		if (ty < PAD.top) ty = cy + 10;
+
+		tooltipBg.setAttribute('x', String(tx));
+		tooltipBg.setAttribute('y', String(ty));
+		tooltipDate.setAttribute('x', String(tx + 9));
+		tooltipDate.setAttribute('y', String(ty + 14));
+		tooltipScore.setAttribute('x', String(tx + 9));
+		tooltipScore.setAttribute('y', String(ty + 31));
+
+		tooltip.setAttribute('visibility', 'visible');
+	});
+
+	svg.addEventListener('mouseleave', () => {
+		tooltip.setAttribute('visibility', 'hidden');
+		crosshair.setAttribute('visibility', 'hidden');
+		hoverCircle.setAttribute('visibility', 'hidden');
+	});
 
 	container.appendChild(svg);
 }

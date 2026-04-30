@@ -1,7 +1,5 @@
 .tracker-dashboard {
 	padding: 20px;
-	max-width: 820px;
-	margin: 0 auto;
 }
 
 /* ── Header ─────────────────────────────────────────────── */
@@ -175,6 +173,76 @@
 	color: var(--text-normal);
 	padding: 5px 0;
 	vertical-align: top;
+}
+
+/* ── Score filter ────────────────────────────────────────── */
+.tracker-score-filter {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin-bottom: 10px;
+}
+
+.tracker-score-filter-label {
+	font-size: 0.78em;
+	color: var(--text-muted);
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	margin-right: 2px;
+}
+
+.tracker-filter-btn {
+	padding: 2px 10px;
+	border-radius: 4px;
+	cursor: pointer;
+	background: var(--background-secondary);
+	border: 1px solid var(--background-modifier-border);
+	color: var(--text-muted);
+	font-size: 0.82em;
+}
+
+.tracker-filter-btn.is-active {
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+	border-color: var(--interactive-accent);
+}
+
+.tracker-filter-btn:hover:not(.is-active) {
+	background: var(--interactive-hover);
+	color: var(--text-normal);
+}
+
+/* ── Chart tooltip ───────────────────────────────────────── */
+.tracker-crosshair {
+	stroke: var(--text-muted);
+	stroke-width: 1;
+	stroke-dasharray: 3 3;
+	pointer-events: none;
+}
+
+.tracker-hover-point {
+	fill: var(--interactive-accent);
+	stroke: var(--background-primary);
+	stroke-width: 2;
+	pointer-events: none;
+}
+
+.tracker-tooltip-bg {
+	fill: var(--background-primary);
+	stroke: var(--background-modifier-border);
+	stroke-width: 1;
+	filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+
+.tracker-tooltip-date {
+	fill: var(--text-muted);
+	font-size: 10px;
+}
+
+.tracker-tooltip-score {
+	fill: var(--text-normal);
+	font-size: 12px;
+	font-weight: 600;
 }
 
 /* ── Empty state ─────────────────────────────────────────── */

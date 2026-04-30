@@ -17,6 +17,7 @@ export class DashboardView extends ItemView {
 	private plugin: DailyTrackerPlugin;
 	private notes: DailyNoteData[] = [];
 	private scoreDays = 30;
+	private scoreFilter: 'all' | 'low' | 'mid' | 'high' = 'all';
 	private loading = false;
 
 	constructor(leaf: WorkspaceLeaf, plugin: DailyTrackerPlugin) {
@@ -104,12 +105,39 @@ export class DashboardView extends ItemView {
 			});
 		}
 
+		type ScoreFilter = typeof this.scoreFilter;
+		const SCORE_FILTERS: { label: string; key: ScoreFilter }[] = [
+			{ label: 'All scores', key: 'all' },
+			{ label: 'Low ≤5', key: 'low' },
+			{ label: 'Mid 6–7', key: 'mid' },
+			{ label: 'High ≥8', key: 'high' },
+		];
+
+		const filterRow = scoreSection.createDiv('tracker-score-filter');
+		filterRow.createSpan({ text: 'Filter:', cls: 'tracker-score-filter-label' });
+		for (const f of SCORE_FILTERS) {
+			const btn = filterRow.createEl('button', {
+				text: f.label,
+				cls: 'tracker-filter-btn' + (f.key === this.scoreFilter ? ' is-active' : ''),
+			});
+			btn.addEventListener('click', () => {
+				this.scoreFilter = f.key;
+				this.render();
+			});
+		}
+
 		const cutoff = new Date();
 		if (this.scoreDays > 0) cutoff.setDate(cutoff.getDate() - this.scoreDays);
 		else cutoff.setFullYear(2000);
 
 		const filteredScores = scoredNotes
 			.filter(n => n.date >= cutoff)
+			.filter(n => {
+				if (this.scoreFilter === 'low') return n.score! <= 5;
+				if (this.scoreFilter === 'mid') return n.score! >= 6 && n.score! <= 7;
+				if (this.scoreFilter === 'high') return n.score! >= 8;
+				return true;
+			})
 			.map(n => ({ date: n.date, score: n.score! }));
 
 		const scoreChartEl = scoreSection.createDiv('tracker-chart-container');
