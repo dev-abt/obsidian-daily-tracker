@@ -63,7 +63,7 @@ export class DashboardView extends ItemView {
 		const header = contentEl.createDiv('tracker-header');
 		header.createEl('h2', { text: 'Daily tracker' });
 		const refreshBtn = header.createEl('button', { text: 'Refresh', cls: 'tracker-refresh-btn' });
-		refreshBtn.addEventListener('click', () => this.refresh());
+		refreshBtn.addEventListener('click', () => { void this.refresh(); });
 
 		if (this.notes.length === 0) {
 			contentEl.createEl('p', {

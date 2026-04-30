@@ -55,16 +55,16 @@ export async function parseVault(vault: Vault, folder: string, dateFormat: DateF
 	const normalizedFolder = trimmed === '' ? '' : trimmed + '/';
 
 	const allFiles = vault.getMarkdownFiles();
-	console.log('[DailyTracker] vault files:', allFiles.map(f => f.path));
-	console.log('[DailyTracker] folder filter:', normalizedFolder || '(none — scanning all)');
-	console.log('[DailyTracker] date format:', dateFormat);
+	console.debug('[DailyTracker] vault files:', allFiles.map(f => f.path));
+	console.debug('[DailyTracker] folder filter:', normalizedFolder || '(none — scanning all)');
+	console.debug('[DailyTracker] date format:', dateFormat);
 
 	const files = allFiles.filter(f => {
 		if (normalizedFolder && !f.path.startsWith(normalizedFolder)) return false;
 		return parseDateFromBasename(f.basename, dateFormat) !== null;
 	});
 
-	console.log('[DailyTracker] matched daily notes:', files.map(f => f.path));
+	console.debug('[DailyTracker] matched daily notes:', files.map(f => f.path));
 
 	for (const file of files) {
 		try {
