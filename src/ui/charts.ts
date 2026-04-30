@@ -18,10 +18,12 @@ export function renderScoreChart(
 	const chartW = W - PAD.left - PAD.right;
 	const chartH = H - PAD.top - PAD.bottom;
 
-	const xScale = (i: number) =>
-		data.length === 1
-			? PAD.left + chartW / 2
-			: PAD.left + (i / (data.length - 1)) * chartW;
+	const minTime = data[0]!.date.getTime();
+	const maxTime = data[data.length - 1]!.date.getTime();
+	const timeRange = maxTime - minTime || 1;
+
+	const xScale = (d: Date) =>
+		PAD.left + ((d.getTime() - minTime) / timeRange) * chartW;
 
 	const yScale = (v: number) =>
 		PAD.top + chartH - ((v - 1) / 9) * chartH;
@@ -51,22 +53,21 @@ export function renderScoreChart(
 		svg.appendChild(label);
 	}
 
-	// X-axis date labels — pick ~5 evenly spaced ticks
+	// X-axis date labels — 5 evenly spaced dates across the full time range
 	const tickCount = Math.min(5, data.length);
-	const tickIndices = data.length === 1
-		? [0]
-		: Array.from({ length: tickCount }, (_, i) => Math.round(i * (data.length - 1) / (tickCount - 1)));
+	const tickDates = tickCount === 1
+		? [data[0]!.date]
+		: Array.from({ length: tickCount }, (_, i) =>
+			new Date(minTime + (i / (tickCount - 1)) * timeRange));
 
-	for (const idx of tickIndices) {
-		const pt = data[idx];
-		if (!pt) continue;
-		const x = xScale(idx);
-		const dateStr = pt.date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+	for (const date of tickDates) {
+		const x = xScale(date);
+		const dateStr = date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 
 		const label = svgEl('text');
 		label.setAttribute('x', String(x));
-		label.setAttribute('y', String(PAD.top + chartH + 14));
-		label.setAttribute('class', 'tracker-axis-label');
+		label.setAttribute('y', String(PAD.top + chartH + 13));
+		label.setAttribute('class', 'tracker-x-label');
 		label.setAttribute('text-anchor', 'middle');
 		label.textContent = dateStr;
 		svg.appendChild(label);
@@ -74,7 +75,7 @@ export function renderScoreChart(
 
 	// Line path
 	if (data.length > 1) {
-		const d = data.map((pt, i) => `${i === 0 ? 'M' : 'L'} ${xScale(i)} ${yScale(pt.score)}`).join(' ');
+		const d = data.map((pt, i) => `${i === 0 ? 'M' : 'L'} ${xScale(pt.date)} ${yScale(pt.score)}`).join(' ');
 		const path = svgEl('path');
 		path.setAttribute('d', d);
 		path.setAttribute('class', 'tracker-line');
@@ -82,11 +83,9 @@ export function renderScoreChart(
 	}
 
 	// Points
-	for (let i = 0; i < data.length; i++) {
-		const pt = data[i];
-		if (!pt) continue;
+	for (const pt of data) {
 		const circle = svgEl('circle');
-		circle.setAttribute('cx', String(xScale(i)));
+		circle.setAttribute('cx', String(xScale(pt.date)));
 		circle.setAttribute('cy', String(yScale(pt.score)));
 		circle.setAttribute('r', '4');
 		circle.setAttribute('class', 'tracker-point');
@@ -145,7 +144,7 @@ export function renderScoreChart(
 		let nearestIdx = 0;
 		let nearestDist = Infinity;
 		for (let i = 0; i < data.length; i++) {
-			const dist = Math.abs(xScale(i) - mouseX);
+			const dist = Math.abs(xScale(data[i]!.date) - mouseX);
 			if (dist < nearestDist) { nearestDist = dist; nearestIdx = i; }
 		}
 
@@ -157,7 +156,7 @@ export function renderScoreChart(
 			return;
 		}
 
-		const cx = xScale(nearestIdx);
+		const cx = xScale(pt.date);
 		const cy = yScale(pt.score);
 
 		crosshair.setAttribute('x1', String(cx));

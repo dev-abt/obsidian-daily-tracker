@@ -133,6 +133,11 @@
 	font-size: 10px;
 }
 
+.tracker-x-label {
+	fill: var(--text-muted);
+	font-size: 8px;
+}
+
 .tracker-line {
 	fill: none;
 	stroke: var(--interactive-accent);
