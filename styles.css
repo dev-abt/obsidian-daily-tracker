@@ -1,0 +1,184 @@
+.tracker-dashboard {
+	padding: 20px;
+	max-width: 820px;
+	margin: 0 auto;
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.tracker-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 20px;
+}
+
+.tracker-header h2 {
+	margin: 0;
+}
+
+.tracker-refresh-btn {
+	padding: 4px 14px;
+	border-radius: 4px;
+	cursor: pointer;
+	background: var(--interactive-normal);
+	border: 1px solid var(--background-modifier-border);
+	color: var(--text-normal);
+}
+
+.tracker-refresh-btn:hover {
+	background: var(--interactive-hover);
+}
+
+/* ── Stat cards ──────────────────────────────────────────── */
+.tracker-stats {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 12px;
+	margin-bottom: 28px;
+}
+
+.tracker-stat-card {
+	background: var(--background-secondary);
+	border-radius: 8px;
+	padding: 14px 16px;
+	text-align: center;
+}
+
+.tracker-stat-value {
+	font-size: 1.7em;
+	font-weight: 700;
+	color: var(--text-accent);
+	line-height: 1.1;
+}
+
+.tracker-stat-label {
+	font-size: 0.78em;
+	color: var(--text-muted);
+	margin-top: 4px;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+/* ── Section ─────────────────────────────────────────────── */
+.tracker-section {
+	margin-bottom: 32px;
+}
+
+.tracker-section h3 {
+	margin: 0 0 10px;
+}
+
+/* ── Range buttons ───────────────────────────────────────── */
+.tracker-controls {
+	display: flex;
+	gap: 6px;
+	margin-bottom: 10px;
+}
+
+.tracker-range-btn {
+	padding: 2px 10px;
+	border-radius: 4px;
+	cursor: pointer;
+	background: var(--background-secondary);
+	border: 1px solid var(--background-modifier-border);
+	color: var(--text-muted);
+	font-size: 0.82em;
+}
+
+.tracker-range-btn.is-active {
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+	border-color: var(--interactive-accent);
+}
+
+.tracker-range-btn:hover:not(.is-active) {
+	background: var(--interactive-hover);
+	color: var(--text-normal);
+}
+
+/* ── Charts ──────────────────────────────────────────────── */
+.tracker-chart-container {
+	width: 100%;
+	overflow-x: auto;
+}
+
+.tracker-chart {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.tracker-grid-line {
+	stroke: var(--background-modifier-border);
+	stroke-width: 1;
+	stroke-dasharray: 3 4;
+}
+
+.tracker-axis-label {
+	fill: var(--text-muted);
+	font-size: 10px;
+}
+
+.tracker-line {
+	fill: none;
+	stroke: var(--interactive-accent);
+	stroke-width: 2.5;
+	stroke-linejoin: round;
+	stroke-linecap: round;
+}
+
+.tracker-point {
+	fill: var(--interactive-accent);
+	stroke: var(--background-primary);
+	stroke-width: 2;
+}
+
+.tracker-bar {
+	fill: var(--interactive-accent);
+	opacity: 0.75;
+}
+
+.tracker-count-label {
+	fill: var(--text-muted);
+	font-size: 11px;
+}
+
+/* ── Recent interactions table ───────────────────────────── */
+.tracker-interactions {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.88em;
+}
+
+.tracker-interactions tr:hover td {
+	background: var(--background-secondary);
+}
+
+.tracker-cell-date {
+	color: var(--text-muted);
+	white-space: nowrap;
+	padding: 5px 14px 5px 0;
+	vertical-align: top;
+	font-size: 0.9em;
+}
+
+.tracker-cell-person {
+	font-weight: 600;
+	color: var(--text-accent);
+	padding: 5px 14px 5px 0;
+	white-space: nowrap;
+	vertical-align: top;
+	min-width: 80px;
+}
+
+.tracker-cell-context {
+	color: var(--text-normal);
+	padding: 5px 0;
+	vertical-align: top;
+}
+
+/* ── Empty state ─────────────────────────────────────────── */
+.tracker-empty {
+	color: var(--text-muted);
+	font-style: italic;
+}

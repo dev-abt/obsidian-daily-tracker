@@ -1,0 +1,9 @@
+{
+	"id": "daily-tracker",
+	"name": "Daily tracker",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "Dashboard for daily notes: score trends, people interactions, and activity stats.",
+	"author": "August Tollerup",
+	"isDesktopOnly": false
+}
