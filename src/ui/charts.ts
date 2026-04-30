@@ -86,7 +86,7 @@ export function renderScoreChart(
 	hoverCircle.setAttribute('visibility', 'hidden');
 	svg.appendChild(hoverCircle);
 
-	const TIP_W = 130, TIP_H = 42;
+	const TIP_W = 108, TIP_H = 30;
 	const tooltip = svgEl('g');
 	tooltip.setAttribute('visibility', 'hidden');
 	tooltip.setAttribute('pointer-events', 'none');
@@ -157,10 +157,10 @@ export function renderScoreChart(
 
 		tooltipBg.setAttribute('x', String(tx));
 		tooltipBg.setAttribute('y', String(ty));
-		tooltipDate.setAttribute('x', String(tx + 9));
-		tooltipDate.setAttribute('y', String(ty + 14));
-		tooltipScore.setAttribute('x', String(tx + 9));
-		tooltipScore.setAttribute('y', String(ty + 31));
+		tooltipDate.setAttribute('x', String(tx + 7));
+		tooltipDate.setAttribute('y', String(ty + 11));
+		tooltipScore.setAttribute('x', String(tx + 7));
+		tooltipScore.setAttribute('y', String(ty + 23));
 
 		tooltip.setAttribute('visibility', 'visible');
 	});

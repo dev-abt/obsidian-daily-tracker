@@ -94,6 +94,7 @@ export class DashboardView extends ItemView {
 		scoreSection.createEl('h3', { text: 'Score over time' });
 
 		const controls = scoreSection.createDiv('tracker-controls');
+
 		for (const opt of RANGE_OPTIONS) {
 			const btn = controls.createEl('button', {
 				text: opt.label,
@@ -105,20 +106,20 @@ export class DashboardView extends ItemView {
 			});
 		}
 
+		controls.createSpan({ cls: 'tracker-controls-divider' });
+
 		type ScoreFilter = typeof this.scoreFilter;
 		const SCORE_FILTERS: { label: string; key: ScoreFilter }[] = [
-			{ label: 'All scores', key: 'all' },
-			{ label: 'Low ≤5', key: 'low' },
-			{ label: 'Mid 6–7', key: 'mid' },
-			{ label: 'High ≥8', key: 'high' },
+			{ label: 'All', key: 'all' },
+			{ label: '≤5', key: 'low' },
+			{ label: '6–7', key: 'mid' },
+			{ label: '≥8', key: 'high' },
 		];
 
-		const filterRow = scoreSection.createDiv('tracker-score-filter');
-		filterRow.createSpan({ text: 'Filter:', cls: 'tracker-score-filter-label' });
 		for (const f of SCORE_FILTERS) {
-			const btn = filterRow.createEl('button', {
+			const btn = controls.createEl('button', {
 				text: f.label,
-				cls: 'tracker-filter-btn' + (f.key === this.scoreFilter ? ' is-active' : ''),
+				cls: 'tracker-range-btn' + (f.key === this.scoreFilter ? ' is-active' : ''),
 			});
 			btn.addEventListener('click', () => {
 				this.scoreFilter = f.key;
@@ -139,6 +140,16 @@ export class DashboardView extends ItemView {
 				return true;
 			})
 			.map(n => ({ date: n.date, score: n.score! }));
+
+		const intervalAvg = filteredScores.length > 0
+			? (filteredScores.reduce((s, n) => s + n.score, 0) / filteredScores.length).toFixed(1)
+			: null;
+		if (intervalAvg !== null) {
+			controls.createSpan({
+				text: `Avg ${intervalAvg}`,
+				cls: 'tracker-controls-avg',
+			});
+		}
 
 		const scoreChartEl = scoreSection.createDiv('tracker-chart-container');
 		renderScoreChart(scoreChartEl, filteredScores);
