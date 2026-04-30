@@ -1,6 +1,6 @@
 import { TFile, Vault } from 'obsidian';
-import { DailyNoteData, PersonInteraction } from './types';
 import { DateFormat } from './settings';
+import { DailyNoteData, PersonInteraction } from './types';
 
 function parseDateFromBasename(basename: string, format: DateFormat): Date | null {
 	// Match any sequence of digits-digits-digits in the filename
@@ -34,7 +34,7 @@ function extractPeopleLogLines(content: string): string[] {
 	const result: string[] = [];
 
 	for (const line of lines) {
-		if (/^##\s+People\s+Log\s*$/i.test(line.trim())) {
+		if (/^{{#1,6}}\s+People\s+Log\s*$/i.test(line.trim())) {
 			inSection = true;
 			continue;
 		}
