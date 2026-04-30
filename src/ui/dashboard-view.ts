@@ -1,4 +1,4 @@
-import { ItemView, WorkspaceLeaf } from 'obsidian';
+import { ItemView, TFile, WorkspaceLeaf } from 'obsidian';
 import { DailyNoteData } from '../types';
 import { parseVault } from '../parser';
 import { renderScoreChart, renderPeopleChart } from './charts';
@@ -167,17 +167,16 @@ export class DashboardView extends ItemView {
 			const now = Date.now();
 			for (const day of topDays) {
 				const card = topCards.createDiv('tracker-top-day-card');
+				card.setAttribute('role', 'button');
+				card.addEventListener('click', () => {
+					const file = this.app.vault.getAbstractFileByPath(day.filePath);
+					if (file instanceof TFile) void this.app.workspace.getLeaf().openFile(file);
+				});
 				card.createDiv({ text: String(day.score), cls: 'tracker-top-day-score' });
-				const info = card.createDiv('tracker-top-day-info');
-				info.createDiv({
-					text: day.date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }),
-					cls: 'tracker-top-day-date',
-				});
 				const daysAgo = Math.round((now - day.date.getTime()) / 86_400_000);
-				info.createDiv({
-					text: daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : `${daysAgo}d ago`,
-					cls: 'tracker-top-day-ago',
-				});
+				const label = day.date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+				const ago = daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : `${daysAgo}d ago`;
+				card.createDiv({ text: `${label} · ${ago}`, cls: 'tracker-top-day-meta' });
 			}
 		}
 

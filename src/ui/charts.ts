@@ -186,50 +186,14 @@ export function renderPeopleChart(
 		return;
 	}
 
-	const barH = 18, gap = 4;
-	const labelW = 100, maxBarW = 160, countW = 28, paddingRight = 4;
-	const W = labelW + maxBarW + countW + paddingRight;
-	const H = top.length * (barH + gap) + gap;
 	const maxCount = Math.max(...top.map(([, c]) => c));
 
-	const svg = svgEl('svg');
-	svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-	svg.setAttribute('width', String(W));
-	svg.setAttribute('class', 'tracker-chart');
-
-	for (let i = 0; i < top.length; i++) {
-		const entry = top[i];
-		if (!entry) continue;
-		const [person, count] = entry;
-		const y = i * (barH + gap) + gap;
-		const barW = Math.max(4, (maxBarW * count) / maxCount);
-
-		const label = svgEl('text');
-		label.setAttribute('x', String(labelW - 6));
-		label.setAttribute('y', String(y + barH / 2));
-		label.setAttribute('class', 'tracker-axis-label');
-		label.setAttribute('text-anchor', 'end');
-		label.setAttribute('dominant-baseline', 'middle');
-		label.textContent = person;
-		svg.appendChild(label);
-
-		const rect = svgEl('rect');
-		rect.setAttribute('x', String(labelW));
-		rect.setAttribute('y', String(y));
-		rect.setAttribute('width', String(barW));
-		rect.setAttribute('height', String(barH));
-		rect.setAttribute('rx', '3');
-		rect.setAttribute('class', 'tracker-bar');
-		svg.appendChild(rect);
-
-		const countLabel = svgEl('text');
-		countLabel.setAttribute('x', String(labelW + barW + 5));
-		countLabel.setAttribute('y', String(y + barH / 2));
-		countLabel.setAttribute('class', 'tracker-count-label');
-		countLabel.setAttribute('dominant-baseline', 'middle');
-		countLabel.textContent = String(count);
-		svg.appendChild(countLabel);
+	for (const [person, count] of top) {
+		const row = container.createDiv('tracker-people-row');
+		row.createDiv({ text: person, cls: 'tracker-people-label' });
+		const barWrap = row.createDiv('tracker-people-bar-wrap');
+		const bar = barWrap.createDiv('tracker-people-bar');
+		bar.style.width = `${Math.max(4, (count / maxCount) * 100)}%`;
+		row.createDiv({ text: String(count), cls: 'tracker-people-count' });
 	}
-
-	container.appendChild(svg);
 }
