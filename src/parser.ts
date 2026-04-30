@@ -34,7 +34,7 @@ function extractPeopleLogLines(content: string): string[] {
 	const result: string[] = [];
 
 	for (const line of lines) {
-		if (/^{{#1,6}}\s+People\s+Log\s*$/i.test(line.trim())) {
+		if (/^#{1,6}\s+People\s+Log\s*$/i.test(line.trim())) {
 			inSection = true;
 			continue;
 		}
