@@ -186,15 +186,15 @@ export function renderPeopleChart(
 		return;
 	}
 
-	const barH = 22, gap = 5;
-	const labelW = 110, countW = 32, paddingRight = 8;
-	const W = 580;
+	const barH = 18, gap = 4;
+	const labelW = 100, maxBarW = 160, countW = 28, paddingRight = 4;
+	const W = labelW + maxBarW + countW + paddingRight;
 	const H = top.length * (barH + gap) + gap;
-	const maxBarW = W - labelW - countW - paddingRight;
 	const maxCount = Math.max(...top.map(([, c]) => c));
 
 	const svg = svgEl('svg');
 	svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+	svg.setAttribute('width', String(W));
 	svg.setAttribute('class', 'tracker-chart');
 
 	for (let i = 0; i < top.length; i++) {

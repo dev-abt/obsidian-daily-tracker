@@ -154,6 +154,33 @@ export class DashboardView extends ItemView {
 		const scoreChartEl = scoreSection.createDiv('tracker-chart-container');
 		renderScoreChart(scoreChartEl, filteredScores);
 
+		// ── Top days ──────────────────────────────────────────────────────────────
+		const topDays = [...scoredNotes]
+			.sort((a, b) => b.score! - a.score! || b.date.getTime() - a.date.getTime())
+			.slice(0, 3)
+			.sort((a, b) => b.date.getTime() - a.date.getTime());
+
+		if (topDays.length > 0) {
+			const topSection = contentEl.createDiv('tracker-section');
+			topSection.createEl('h3', { text: 'Best days' });
+			const topCards = topSection.createDiv('tracker-top-days');
+			const now = Date.now();
+			for (const day of topDays) {
+				const card = topCards.createDiv('tracker-top-day-card');
+				card.createDiv({ text: String(day.score), cls: 'tracker-top-day-score' });
+				const info = card.createDiv('tracker-top-day-info');
+				info.createDiv({
+					text: day.date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }),
+					cls: 'tracker-top-day-date',
+				});
+				const daysAgo = Math.round((now - day.date.getTime()) / 86_400_000);
+				info.createDiv({
+					text: daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : `${daysAgo}d ago`,
+					cls: 'tracker-top-day-ago',
+				});
+			}
+		}
+
 		// ── People chart ──────────────────────────────────────────────────────────
 		const peopleSection = contentEl.createDiv('tracker-section');
 		peopleSection.createEl('h3', { text: 'Top people' });
