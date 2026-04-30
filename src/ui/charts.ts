@@ -13,8 +13,8 @@ export function renderScoreChart(
 		return;
 	}
 
-	const W = 580, H = 160;
-	const PAD = { top: 12, right: 12, bottom: 20, left: 28 };
+	const W = 580, H = 175;
+	const PAD = { top: 12, right: 12, bottom: 35, left: 28 };
 	const chartW = W - PAD.left - PAD.right;
 	const chartH = H - PAD.top - PAD.bottom;
 
@@ -48,6 +48,27 @@ export function renderScoreChart(
 		label.setAttribute('class', 'tracker-axis-label');
 		label.setAttribute('text-anchor', 'end');
 		label.textContent = String(y);
+		svg.appendChild(label);
+	}
+
+	// X-axis date labels — pick ~5 evenly spaced ticks
+	const tickCount = Math.min(5, data.length);
+	const tickIndices = data.length === 1
+		? [0]
+		: Array.from({ length: tickCount }, (_, i) => Math.round(i * (data.length - 1) / (tickCount - 1)));
+
+	for (const idx of tickIndices) {
+		const pt = data[idx];
+		if (!pt) continue;
+		const x = xScale(idx);
+		const dateStr = pt.date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+
+		const label = svgEl('text');
+		label.setAttribute('x', String(x));
+		label.setAttribute('y', String(PAD.top + chartH + 14));
+		label.setAttribute('class', 'tracker-axis-label');
+		label.setAttribute('text-anchor', 'middle');
+		label.textContent = dateStr;
 		svg.appendChild(label);
 	}
 
